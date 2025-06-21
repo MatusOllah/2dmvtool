@@ -38,9 +38,9 @@ Even Rui checks his before debugging show chaos.`,
 		if ver == "" {
 			fmt.Println("2DMVTool version is unavailable.")
 		} else {
-			fmt.Printf("%s %s %s\n", cyan("2DMVTool"), bold("version"), ver)
+			fmt.Println(cyan("2DMVTool"), bold("version"), ver)
 		}
-		fmt.Printf("%s %s %s (%s/%s)\n", cyan("Go"), bold("version"), runtime.Version(), runtime.GOOS, runtime.GOARCH)
+		fmt.Println(cyan("Go"), bold("version"), runtime.Version(), runtime.GOOS, runtime.GOARCH)
 
 		fmt.Printf("\nCopyright (c) 2025 Matúš Ollah; Licensed under MIT License\n")
 	},
