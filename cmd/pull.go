@@ -55,7 +55,7 @@ var pullCmd = &cobra.Command{
 
 		file, err := os.Create(output)
 		checkErr(err)
-		defer file.Close()
+		defer checkErr(file.Close())
 
 		// create progress bar
 		pb := progressbar.DefaultBytes(size, "Pulling CRI Sofdec video file...")
