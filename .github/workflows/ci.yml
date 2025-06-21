@@ -27,4 +27,4 @@ jobs:
 
     - name: Build and run
       run: |
-        go run -v -buildvcs=true . --version
+        go run -v -buildvcs=true . version
