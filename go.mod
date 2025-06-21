@@ -3,6 +3,7 @@ module github.com/MatusOllah/2dmvtool
 go 1.24.3
 
 require (
+	github.com/electricbubble/gadb v0.1.0
 	github.com/fatih/color v1.18.0
 	github.com/spf13/cobra v1.9.1
 )
