@@ -1,8 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/MatusOllah/2dmvtool/cmd"
 
 func main() {
-	// Placeholder
-	fmt.Println("wonderhoy!~")
+	cmd.Execute()
 }
