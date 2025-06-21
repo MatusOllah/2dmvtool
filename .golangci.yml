@@ -1,0 +1,13 @@
+version: "2"
+
+linters:
+  enable:
+    - misspell
+  
+  settings:
+    govet:
+      disable:
+        - composites
+    
+    misspell:
+      locale: US
