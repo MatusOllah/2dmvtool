@@ -39,7 +39,7 @@ func pull(id int, dst string) error {
 			yellow := color.New(color.FgYellow).SprintFunc()
 			fmt.Fprintf(os.Stderr, "⚠️  %s %s %s\n", yellow("File"), dst, yellow("already exists and will be overwritten."))
 		} else {
-			return fmt.Errorf("file %s already exists. Use --force to overwrite it.", dst)
+			return fmt.Errorf("file %s already exists. Use --force to overwrite it", dst)
 		}
 	}
 
