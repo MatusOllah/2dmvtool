@@ -45,6 +45,7 @@ func pull(id int, dst string) error {
 	if _, err := os.Stat(dst); err == nil {
 		if force {
 			yellow := color.New(color.FgYellow).SprintFunc()
+			// The emoji renders weirdly, hence the 2 spaces
 			fmt.Fprintf(os.Stderr, "⚠️  %s %s %s\n", yellow("File"), dst, yellow("already exists and will be overwritten."))
 		} else {
 			return fmt.Errorf("file %s already exists. Use --force to overwrite it", dst)
