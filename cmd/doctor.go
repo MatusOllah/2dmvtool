@@ -29,7 +29,9 @@ func checkTool(name, cmd string) error {
 // doctorCmd represents the doctor command.
 var doctorCmd = &cobra.Command{
 	Use:   "doctor",
-	Short: "Check whether the dependencies are installed and configured correctly.",
+	Short: "Check whether the dependencies are installed",
+	Long: `Check whether the dependencies are installed and configured correctly.
+More specifically, this checks for the presence of ADB, FFmpeg, and FFplay.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		checkErr(checkTool("ADB", "adb"))
 		checkErr(checkTool("FFmpeg", "ffmpeg"))

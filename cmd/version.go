@@ -27,7 +27,7 @@ func getVersion() string {
 // versionCmd represents the version command.
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version of 2DMVTool.",
+	Short: "Print the version of 2DMVTool",
 	Long: `All software has versions. This prints 2DMVTool's version.
 Even Rui checks his before debugging show chaos.`,
 	Run: func(cmd *cobra.Command, args []string) {
