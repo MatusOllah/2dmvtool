@@ -3,6 +3,8 @@ package adbutil
 import (
 	"fmt"
 	"path/filepath"
+	"strconv"
+	"strings"
 
 	"github.com/electricbubble/gadb"
 )
@@ -12,11 +14,17 @@ func parseADBAddress(adbAddress string) (string, int, error) {
 		return "localhost", 5037, nil // default
 	}
 
-	var host string
-	var port int
-	n, err := fmt.Sscanf(adbAddress, "%[^:]:%d", &host, &port)
-	if err != nil || n != 2 {
-		return "", 0, fmt.Errorf("invalid ADB address format: %s", adbAddress)
+	parts := strings.SplitN(adbAddress, ":", 2)
+	if len(parts) != 2 {
+		return "", 0, fmt.Errorf("invalid ADB address format, expected 'host:port': %s", adbAddress)
+	}
+
+	host := parts[0]
+
+	portStr := parts[1]
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		return "", 0, fmt.Errorf("failed to parse port number %s: %w", portStr, err)
 	}
 
 	if port <= 0 || port > 65535 {
@@ -65,16 +73,17 @@ func OpenDevice(adbAddress string, serial string) (*gadb.Device, error) {
 }
 
 func GetRemoteFileSize(device *gadb.Device, path string) (int64, error) {
-	infos, err := device.List(filepath.Dir(path))
+	output, err := device.RunShellCommand(fmt.Sprintf("stat -c %%s %s", filepath.ToSlash(path)))
 	if err != nil {
-		return 0, fmt.Errorf("failed to list directory %s: %w", filepath.Dir(path), err)
+		return 0, fmt.Errorf("failed to stat %s: %w", path, err)
 	}
 
-	for _, info := range infos {
-		if info.Name == filepath.Base(path) {
-			return int64(info.Size), nil
-		}
+	output = strings.TrimSpace(output)
+
+	size, err := strconv.ParseInt(output, 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("failed to parse size from output %s: %w", output, err)
 	}
 
-	return 0, fmt.Errorf("file %s not found on device", path)
+	return size, nil
 }

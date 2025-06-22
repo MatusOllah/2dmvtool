@@ -50,12 +50,17 @@ var pullCmd = &cobra.Command{
 		}
 
 		if _, err := os.Stat(output); err == nil {
-			fmt.Fprint(os.Stderr, color.HiYellowString("⚠️ File %s already exists and will be overwritten.\n", output))
+			yellow := color.New(color.FgYellow).SprintFunc()
+			fmt.Fprintf(os.Stderr, "⚠️  %s %s %s\n", yellow("File"), output, yellow("already exists and will be overwritten."))
 		}
 
 		file, err := os.Create(output)
 		checkErr(err)
-		defer checkErr(file.Close())
+		defer func() {
+			if err := file.Close(); err != nil {
+				checkErr(err)
+			}
+		}()
 
 		// create progress bar
 		pb := progressbar.DefaultBytes(size, "Pulling CRI Sofdec video file...")
@@ -66,7 +71,7 @@ var pullCmd = &cobra.Command{
 		}
 
 		// success message
-		fmt.Printf("✅ Successfully pulled CRI Sofdec video file for song ID %d to %s!\n", id, output)
+		color.Green("✅ Successfully pulled raw 2DMV!")
 	},
 }
 
