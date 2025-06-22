@@ -15,7 +15,7 @@ var rootCmd = &cobra.Command{
 	Short: "2DMVTool is a CLI tool for managing Project SEKAI 2DMVs.",
 	Long:  `2DMVTool is a CLI tool designed to help manage and manipulate 2D music videos (2DMVs) for Project SEKAI (PJSK).`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		gadb.SetDebug(verbose)
+		gadb.SetDebug(adbDebug)
 	},
 }
 
@@ -30,11 +30,15 @@ func Execute() {
 
 // The flags.
 var (
-	verbose bool
+	verbose    bool
+	adbDebug   bool
+	adbAddress string
 )
 
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Print verbose output")
+	rootCmd.PersistentFlags().BoolVar(&adbDebug, "adb-debug", false, "Enable ADB debug output")
+	rootCmd.PersistentFlags().StringVar(&adbAddress, "adb-address", "localhost:5037", "ADB server address")
 }
 
 func checkErr(err error) {

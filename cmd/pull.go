@@ -100,18 +100,16 @@ var pullCmd = &cobra.Command{
 }
 
 var (
-	adbAddress string
-	serial     string
-	kind       mv.MVKind       = mv.MVKindSEKAI
-	region     mv.ServerRegion = mv.ServerRegionEN
-	output     string
-	force      bool
+	serial string
+	kind   mv.MVKind       = mv.MVKindSEKAI
+	region mv.ServerRegion = mv.ServerRegionEN
+	output string
+	force  bool
 )
 
 func init() {
 	rootCmd.AddCommand(pullCmd)
 
-	pullCmd.Flags().StringVar(&adbAddress, "adb", "localhost:5037", "ADB server address")
 	pullCmd.Flags().StringVarP(&serial, "serial", "s", "", "Device serial number")
 	pullCmd.Flags().VarP(&kind, "kind", "k", "Type of 2DMV to prefer pulling (\"original\", \"sekai\")")
 	pullCmd.Flags().VarP(&region, "region", "r", "Game server region (\"jp\", \"en\", \"tw\", \"kr\", \"cn\")")
