@@ -15,9 +15,17 @@ import (
 
 func pull(id int, dst string) error {
 	// open device
+	if verbose {
+		fmt.Printf("Opening device at ADB %s with serial number %s...\n", adbAddress, serial)
+	}
 	device, err := adbutil.OpenDevice(adbAddress, serial)
 	if err != nil {
 		return fmt.Errorf("opening device: %v\nTry starting the ADB server using this command:\n\tadb start-server", err)
+	}
+
+	if verbose {
+		fmt.Println("Device opened successfully.")
+		adbutil.PrintDeviceInfo(device)
 	}
 
 	// get path
@@ -50,6 +58,10 @@ func pull(id int, dst string) error {
 			checkErr(err)
 		}
 	}()
+
+	if verbose {
+		fmt.Printf("Pulling remote file %s => %s (%d bytes)...\n", path, dst, size)
+	}
 
 	// create progress bar
 	pb := progressbar.DefaultBytes(size, "Pulling CRI Sofdec video file...")

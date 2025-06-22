@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/electricbubble/gadb"
+	"github.com/fatih/color"
 )
 
 func parseADBAddress(adbAddress string) (string, int, error) {
@@ -86,4 +87,15 @@ func GetRemoteFileSize(device *gadb.Device, path string) (int64, error) {
 	}
 
 	return size, nil
+}
+
+func PrintDeviceInfo(device *gadb.Device) {
+	bold := color.New(color.Bold).SprintFunc()
+	cyan := color.New(color.FgCyan).SprintFunc()
+
+	fmt.Println("Device Serial:", cyan(device.Serial()))
+	fmt.Println("Device Information:")
+	for key, value := range device.DeviceInfo() {
+		fmt.Printf("\t%s = %s\n", bold(key), cyan(value))
+	}
 }
