@@ -32,7 +32,7 @@ var pullCmd = &cobra.Command{
 		}
 
 		// open device
-		device, err := adbutil.OpenDevice(serial)
+		device, err := adbutil.OpenDevice(adbAdddress, serial)
 		if err != nil {
 			checkErr(fmt.Errorf("opening device: %v\nTry starting the ADB server using this command:\n\tadb start-server", err))
 		}
@@ -71,17 +71,19 @@ var pullCmd = &cobra.Command{
 }
 
 var (
-	serial string
-	kind   mv.MVKind       = mv.MVKindSEKAI
-	region mv.ServerRegion = mv.ServerRegionEN
-	output string
+	adbAdddress string
+	serial      string
+	kind        mv.MVKind       = mv.MVKindSEKAI
+	region      mv.ServerRegion = mv.ServerRegionEN
+	output      string
 )
 
 func init() {
 	rootCmd.AddCommand(pullCmd)
 
+	pullCmd.Flags().StringVar(&adbAdddress, "adb", "localhost:5037", "ADB server address")
 	pullCmd.Flags().StringVarP(&serial, "serial", "s", "", "Device serial number")
-	pullCmd.Flags().VarP(&kind, "kind", "k", "Type of MV to prefer pulling (\"original\", \"sekai\")")
+	pullCmd.Flags().VarP(&kind, "kind", "k", "Type of 2DMV to prefer pulling (\"original\", \"sekai\")")
 	pullCmd.Flags().VarP(&region, "region", "r", "Game server region (\"jp\", \"en\", \"tw\", \"kr\", \"cn\")")
-	pullCmd.Flags().StringVarP(&output, "output", "o", "", "Output file path (default: <id>.usm)")
+	pullCmd.Flags().StringVarP(&output, "output", "o", "", "Output file path (default <id>.usm)")
 }

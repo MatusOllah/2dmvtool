@@ -7,8 +7,32 @@ import (
 	"github.com/electricbubble/gadb"
 )
 
-func OpenDevice(serial string) (*gadb.Device, error) {
-	client, err := gadb.NewClient()
+func parseADBAddress(adbAddress string) (string, int, error) {
+	if adbAddress == "" {
+		return "localhost", 5037, nil // default
+	}
+
+	var host string
+	var port int
+	n, err := fmt.Sscanf(adbAddress, "%[^:]:%d", &host, &port)
+	if err != nil || n != 2 {
+		return "", 0, fmt.Errorf("invalid ADB address format: %s", adbAddress)
+	}
+
+	if port <= 0 || port > 65535 {
+		return "", 0, fmt.Errorf("port must be between 1 and 65535: %d", port)
+	}
+
+	return host, port, nil
+}
+
+func OpenDevice(adbAddress string, serial string) (*gadb.Device, error) {
+	host, port, err := parseADBAddress(adbAddress)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse ADB address %s: %w", adbAddress, err)
+	}
+
+	client, err := gadb.NewClientWith(host, port)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to ADB server: %w", err)
 	}
