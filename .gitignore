@@ -19,3 +19,11 @@
 
 # Go workspace file
 go.work
+
+# Project SEKAI 2DMVs
+*.usm
+*.usm.bytes
+
+# Project SEKAI 2DMVs (transcoded)
+*.mp4
+*.mkv
