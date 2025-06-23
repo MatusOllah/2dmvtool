@@ -36,7 +36,7 @@ Use responsibly.
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Fprintf(os.Stderr, rui.ANSIArt)
 		fmt.Fprintln(os.Stderr)
-		fmt.Fprint(os.Stderr, color.New(color.Bold).Sprintf("\"%s\"\n\t- Rui Kamishiro\n", rui.RandomQuote()))
+		color.New(color.Bold).Fprintf(os.Stderr, "\"%s\"\n\t- Rui Kamishiro\n", rui.RandomQuote())
 		if rui.IsBirthday() {
 			color.New(color.FgHiMagenta, color.Bold).Fprintln(os.Stderr, "\nHappy Birthday, Rui Kamishiro! 🎉❤️")
 		}
