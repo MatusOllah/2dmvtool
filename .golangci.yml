@@ -9,5 +9,14 @@ linters:
       disable:
         - composites
     
+    errcheck:
+      exclude-functions:
+        - (*github.com/fatih/color.Color).Print
+        - (*github.com/fatih/color.Color).Printf
+        - (*github.com/fatih/color.Color).Println
+        - (*github.com/fatih/color.Color).Fprint
+        - (*github.com/fatih/color.Color).Fprintf
+        - (*github.com/fatih/color.Color).Fprintln
+    
     misspell:
       locale: US
