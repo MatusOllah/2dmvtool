@@ -34,7 +34,24 @@ func pull(id int, dst string) error {
 	// get file size
 	size, err := adbutil.GetRemoteFileSize(device, path)
 	if err != nil {
-		return err
+		if fallbackKind {
+			altKind := kind.Other()
+
+			yellow := color.New(color.FgYellow).SprintFunc()
+			fmt.Fprintf(os.Stderr, "⚠️  %s %s %s %s%s\n", yellow("Requested 2DMV kind"), kind.String(), yellow("not found, trying fallback kind"), altKind, yellow("..."))
+
+			altPath := mv.MVPath(id, altKind, region)
+
+			size, err = adbutil.GetRemoteFileSize(device, altPath)
+			if err != nil {
+				return fmt.Errorf("2DMV of either kind not found, failed to stat file: %w", err)
+			}
+
+			path = altPath
+			kind = altKind
+		} else {
+			return fmt.Errorf("2DMV not found, failed to stat file: %w", err)
+		}
 	}
 
 	// create output file
@@ -101,11 +118,12 @@ var pullCmd = &cobra.Command{
 }
 
 var (
-	serial string
-	kind   mv.MVKind       = mv.MVKindSEKAI
-	region mv.ServerRegion = mv.ServerRegionEN
-	output string
-	force  bool
+	serial       string
+	kind         mv.MVKind = mv.MVKindSEKAI
+	fallbackKind bool
+	region       mv.ServerRegion = mv.ServerRegionEN
+	output       string
+	force        bool
 )
 
 func init() {
@@ -113,6 +131,7 @@ func init() {
 
 	pullCmd.Flags().StringVarP(&serial, "serial", "s", "", "Device serial number")
 	pullCmd.Flags().VarP(&kind, "kind", "k", "Type of 2DMV to prefer pulling (\"original\", \"sekai\")")
+	pullCmd.Flags().BoolVar(&fallbackKind, "fallback", true, "Fallback to other kind if requested kind not found")
 	pullCmd.Flags().VarP(&region, "region", "r", "Game server region (\"jp\", \"en\", \"tw\", \"kr\", \"cn\")")
 	pullCmd.Flags().StringVarP(&output, "output", "o", "", "Output file path (default <id>.usm)")
 	pullCmd.Flags().BoolVarP(&force, "force", "f", false, "Force overwrite existing output file")

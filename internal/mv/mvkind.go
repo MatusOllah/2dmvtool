@@ -35,3 +35,14 @@ func (k *MVKind) Set(value string) error {
 func (k MVKind) Type() string {
 	return "MVKind"
 }
+
+func (k MVKind) Other() MVKind {
+	switch k {
+	case MVKindSEKAI:
+		return MVKindOriginal
+	case MVKindOriginal:
+		return MVKindSEKAI
+	default:
+		return k // fallback not defined
+	}
+}
