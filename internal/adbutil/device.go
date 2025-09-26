@@ -2,6 +2,7 @@ package adbutil
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -93,9 +94,9 @@ func PrintDeviceInfo(device *gadb.Device) {
 	bold := color.New(color.Bold).SprintFunc()
 	cyan := color.New(color.FgCyan).SprintFunc()
 
-	fmt.Println("Device Serial:", cyan(device.Serial()))
-	fmt.Println("Device Information:")
+	fmt.Fprintln(os.Stderr, "Device Serial:", cyan(device.Serial()))
+	fmt.Fprintln(os.Stderr, "Device Information:")
 	for key, value := range device.DeviceInfo() {
-		fmt.Printf("\t%s = %s\n", bold(key), cyan(value))
+		fmt.Fprintf(os.Stderr, "\t%s = %s\n", bold(key), cyan(value))
 	}
 }

@@ -16,7 +16,7 @@ import (
 func pull(id int, dst string, serial string, kind mv.MVKind, region mv.ServerRegion, fallbackKind bool, force bool) error {
 	// open device
 	if verbose {
-		fmt.Printf("Opening device at ADB %s with serial number %s...\n", adbAddress, serial)
+		fmt.Fprintf(os.Stderr, "Opening device at ADB %s with serial number %s...\n", adbAddress, serial)
 	}
 	device, err := adbutil.OpenDevice(adbAddress, serial)
 	if err != nil {
@@ -24,7 +24,7 @@ func pull(id int, dst string, serial string, kind mv.MVKind, region mv.ServerReg
 	}
 
 	if verbose {
-		fmt.Println("Device opened successfully.")
+		fmt.Fprintln(os.Stderr, "Device opened successfully.")
 		adbutil.PrintDeviceInfo(device)
 	}
 
@@ -78,7 +78,7 @@ func pull(id int, dst string, serial string, kind mv.MVKind, region mv.ServerReg
 	}()
 
 	if verbose {
-		fmt.Printf("Pulling remote file %s => %s (%d bytes)...\n", path, dst, size)
+		fmt.Fprintf(os.Stderr, "Pulling remote file %s => %s (%d bytes)...\n", path, dst, size)
 	}
 
 	// create progress bar
@@ -122,7 +122,7 @@ func NewPullCommand() *cobra.Command {
 			checkErr(pull(id, output, serial, kind, region, fallbackKind, force))
 
 			// success message
-			color.Green("✅ Successfully pulled raw 2DMV!")
+			fmt.Fprintln(os.Stderr, color.GreenString("✅ Successfully pulled raw 2DMV!"))
 		},
 	}
 

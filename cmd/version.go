@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 	"runtime/debug"
 
@@ -36,11 +37,11 @@ Even Rui checks his before debugging show chaos.`,
 
 			ver := getVersion()
 			if ver == "" {
-				fmt.Println("2DMVTool version is unavailable.")
+				fmt.Fprintln(os.Stderr, "2DMVTool version is unavailable.")
 			} else {
-				fmt.Println(cyan("2DMVTool"), bold("version"), ver)
+				fmt.Fprintln(os.Stderr, cyan("2DMVTool"), bold("version"), ver)
 			}
-			fmt.Println(cyan("Go"), bold("version"), runtime.Version(), runtime.GOOS, runtime.GOARCH)
+			fmt.Fprintln(os.Stderr, cyan("Go"), bold("version"), runtime.Version(), "("+runtime.GOOS+"/"+runtime.GOARCH+")")
 		},
 	}
 }

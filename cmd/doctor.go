@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 
 	"github.com/fatih/color"
@@ -9,19 +10,19 @@ import (
 )
 
 func checkTool(name, cmd string) error {
-	fmt.Printf("Checking %s... ", name)
+	fmt.Fprintf(os.Stderr, "Checking %s... ", name)
 
 	path, err := exec.LookPath(cmd)
 	if err != nil {
-		fmt.Printf("not found\n")
+		fmt.Fprintf(os.Stderr, "not found\n")
 		return fmt.Errorf("tool %s not found in PATH: %w", name, err)
 	}
 
-	fmt.Print(color.HiGreenString("OK"))
+	fmt.Fprint(os.Stderr, color.HiGreenString("OK"))
 	if verbose {
-		fmt.Printf(" (%s)", path)
+		fmt.Fprintf(os.Stderr, " (%s)", path)
 	}
-	fmt.Println()
+	fmt.Fprintln(os.Stderr)
 
 	return nil
 }

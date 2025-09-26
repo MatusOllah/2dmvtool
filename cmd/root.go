@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 	Long:  `2DMVTool is a CLI tool designed to help manage and manipulate 2D music videos (2DMVs) for Project SEKAI (PJSK).`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if superVerbose {
-			fmt.Println("Just use a debugger at this point 🤣")
+			fmt.Fprintln(os.Stderr, "Just use a debugger at this point 🤣")
 			os.Exit(39)
 		}
 
@@ -53,7 +53,7 @@ func init() {
 
 func checkErr(err error) {
 	if err != nil {
-		fmt.Println(color.HiRedString("Error:"), err)
+		fmt.Fprintln(os.Stderr, color.HiRedString("Error:"), err)
 		os.Exit(1)
 	}
 }
