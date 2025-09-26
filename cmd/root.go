@@ -17,7 +17,7 @@ var rootCmd = &cobra.Command{
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if superVerbose {
 			fmt.Println("Just use a debugger at this point 🤣")
-			os.Exit(69)
+			os.Exit(39)
 		}
 
 		gadb.SetDebug(adbDebug)

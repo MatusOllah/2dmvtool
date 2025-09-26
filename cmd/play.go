@@ -12,29 +12,33 @@ func isLocalFile(path string) bool {
 	return err == nil
 }
 
-// playCmd represents the play command.
-var playCmd = &cobra.Command{
-	Use:   "play",
-	Short: "Play a 2DMV.",
-	Long:  `Play a 2DMV either from a local file or from an Android device by specifying the song ID.`,
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		isFile := isLocalFile(args[0])
+func NewPlayCommand() *cobra.Command {
+	var (
+		ffplayArgs string
+	)
 
-		if isFile {
-			// Play local file
-			cmd := exec.Command("ffplay", "-i", args[0])
-			cmd.Args = append(cmd.Args, ffplayArgs)
-		}
-	},
+	c := &cobra.Command{
+		Use:   "play",
+		Short: "Play a 2DMV",
+		Long:  `Play a 2DMV either from a local file or from an Android device by specifying the song ID.`,
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			isFile := isLocalFile(args[0])
+
+			if isFile {
+				// Play local file
+				cmd := exec.Command("ffplay", "-i", args[0])
+				cmd.Args = append(cmd.Args, ffplayArgs)
+			}
+		},
+	}
+
+	// Flags
+	c.Flags().StringVarP(&ffplayArgs, "ffplay-args", "a", "", "Additional arguments to pass to FFplay")
+
+	return c
 }
 
-var (
-	ffplayArgs string
-)
-
 func init() {
-	rootCmd.AddCommand(playCmd)
-
-	playCmd.Flags().StringVarP(&ffplayArgs, "ffplay-args", "a", "", "Additional arguments to pass to FFplay")
+	rootCmd.AddCommand(NewPlayCommand())
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func pull(id int, dst string) error {
+func pull(id int, dst string, serial string, kind mv.MVKind, region mv.ServerRegion, fallbackKind bool, force bool) error {
 	// open device
 	if verbose {
 		fmt.Printf("Opening device at ADB %s with serial number %s...\n", adbAddress, serial)
@@ -48,7 +48,7 @@ func pull(id int, dst string) error {
 			}
 
 			path = altPath
-			kind = altKind
+			//kind = altKind
 		} else {
 			return fmt.Errorf("2DMV not found, failed to stat file: %w", err)
 		}
@@ -92,47 +92,51 @@ func pull(id int, dst string) error {
 	return nil
 }
 
-// pullCmd represents the pull command
-var pullCmd = &cobra.Command{
-	Use:     "pull id",
-	Short:   "Pull a raw 2DMV from an Android device",
-	Long:    `Pull a raw CRI Sofdec 2DMV from an Android device using the specified song ID.`,
-	Example: `2dmvtool pull 514`, // example for FAKE HEART by KIRA feat. Kagamine Rin/Len (#514)
-	Args:    cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		// parse song ID integer
-		id, err := strconv.Atoi(args[0])
-		if err != nil {
-			checkErr(fmt.Errorf("failed to parse song ID %s: %w", args[0], err))
-		}
+func NewPullCommand() *cobra.Command {
+	var (
+		serial       string
+		kind         mv.MVKind = mv.MVKindSEKAI
+		fallbackKind bool
+		region       mv.ServerRegion = mv.ServerRegionEN
+		output       string
+		force        bool
+	)
 
-		if id <= 0 {
-			checkErr(fmt.Errorf("song ID must be a positive integer"))
-		}
+	c := &cobra.Command{
+		Use:     "pull id",
+		Short:   "Pull a raw 2DMV from an Android device",
+		Long:    `Pull a raw CRI Sofdec 2DMV from an Android device using the specified song ID.`,
+		Example: `2dmvtool pull 514`, // example for FAKE HEART by KIRA feat. Kagamine Rin/Len (#514)
+		Args:    cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			// parse song ID integer
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				checkErr(fmt.Errorf("failed to parse song ID %s: %w", args[0], err))
+			}
 
-		checkErr(pull(id, output))
+			if id <= 0 {
+				checkErr(fmt.Errorf("song ID must be a positive integer"))
+			}
 
-		// success message
-		color.Green("✅ Successfully pulled raw 2DMV!")
-	},
+			checkErr(pull(id, output, serial, kind, region, fallbackKind, force))
+
+			// success message
+			color.Green("✅ Successfully pulled raw 2DMV!")
+		},
+	}
+
+	// Flags
+	c.Flags().StringVarP(&serial, "serial", "s", "", "Device serial number")
+	c.Flags().VarP(&kind, "kind", "k", "Type of 2DMV to prefer pulling (\"original\", \"sekai\")")
+	c.Flags().BoolVar(&fallbackKind, "fallback", true, "Fallback to other kind if requested kind not found")
+	c.Flags().VarP(&region, "region", "r", "Game server region (\"jp\", \"en\", \"tw\", \"kr\", \"cn\")")
+	c.Flags().StringVarP(&output, "output", "o", "", "Output file path (default <id>.usm)")
+	c.Flags().BoolVarP(&force, "force", "f", false, "Force overwrite existing output file")
+
+	return c
 }
 
-var (
-	serial       string
-	kind         mv.MVKind = mv.MVKindSEKAI
-	fallbackKind bool
-	region       mv.ServerRegion = mv.ServerRegionEN
-	output       string
-	force        bool
-)
-
 func init() {
-	rootCmd.AddCommand(pullCmd)
-
-	pullCmd.Flags().StringVarP(&serial, "serial", "s", "", "Device serial number")
-	pullCmd.Flags().VarP(&kind, "kind", "k", "Type of 2DMV to prefer pulling (\"original\", \"sekai\")")
-	pullCmd.Flags().BoolVar(&fallbackKind, "fallback", true, "Fallback to other kind if requested kind not found")
-	pullCmd.Flags().VarP(&region, "region", "r", "Game server region (\"jp\", \"en\", \"tw\", \"kr\", \"cn\")")
-	pullCmd.Flags().StringVarP(&output, "output", "o", "", "Output file path (default <id>.usm)")
-	pullCmd.Flags().BoolVarP(&force, "force", "f", false, "Force overwrite existing output file")
+	rootCmd.AddCommand(NewPullCommand())
 }

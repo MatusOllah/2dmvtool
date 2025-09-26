@@ -26,19 +26,20 @@ func checkTool(name, cmd string) error {
 	return nil
 }
 
-// doctorCmd represents the doctor command.
-var doctorCmd = &cobra.Command{
-	Use:   "doctor",
-	Short: "Check whether the dependencies are installed",
-	Long: `Check whether the dependencies are installed and configured correctly.
+func NewDoctorCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:   "doctor",
+		Short: "Check whether the dependencies are installed",
+		Long: `Check whether the dependencies are installed and configured correctly.
 More specifically, this checks for the presence of ADB, FFmpeg, and FFplay.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		checkErr(checkTool("ADB", "adb"))
-		checkErr(checkTool("FFmpeg", "ffmpeg"))
-		checkErr(checkTool("FFplay", "ffplay"))
-	},
+		Run: func(cmd *cobra.Command, args []string) {
+			checkErr(checkTool("ADB", "adb"))
+			checkErr(checkTool("FFmpeg", "ffmpeg"))
+			checkErr(checkTool("FFplay", "ffplay"))
+		},
+	}
 }
 
 func init() {
-	rootCmd.AddCommand(doctorCmd)
+	rootCmd.AddCommand(NewDoctorCommand())
 }
