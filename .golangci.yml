@@ -18,5 +18,9 @@ linters:
         - (*github.com/fatih/color.Color).Fprintf
         - (*github.com/fatih/color.Color).Fprintln
     
+    staticcheck:
+      checks:
+        - -ST1023 # annoying
+    
     misspell:
       locale: US
